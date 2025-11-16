@@ -1,0 +1,24 @@
+app: protrader-ai-agent
+services:
+  - name: ai-agent
+    ports:
+      - port: 8000
+        http_path: /
+    routes:
+      - path: /
+        port: 8000
+    instances:
+      type: nano
+      count: 1
+    build:
+      type: dockerfile
+      dockerfile: |
+        FROM python:3.11-slim
+        WORKDIR /app
+        COPY requirements.txt .
+        RUN pip install --no-cache-dir -r requirements.txt
+        COPY . .
+        CMD ["uvicorn", "main_combined_learning:app", "--host", "0.0.0.0", "--port", "8000"]
+    env:
+      - name: PORT
+        value: "8000"
